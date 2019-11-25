@@ -35,6 +35,7 @@ class Card:
         self.card[del_idx] = None
 
     def show(self):
+
         # печать карточки
         print(f'\n-{self.player_name}{"-" * (26 - len(self.player_name) - 1)}')
         for i in range(len(self.card)):
@@ -47,7 +48,7 @@ class Card:
             else:
                 print(self.card[i], end='')
             print() if i + 1 in (9, 18, 27) else print(' ', end='')
-        print('-' * 26, end='\n\n')
+        print('-' * 26, end='\n')
 
 # Родительский класс - воможно потом
 # class Player:
@@ -81,7 +82,7 @@ class User(Computer):
         self.answers = ['y', 'n']
 
     def step(self, num):
-        answer = input('Зачеркнуть цифру? (y/n) ')
+        answer = input(f'{self.name}, зачеркнуть цифру? (y/n) ')
         while answer not in self.answers:
             answer = input('Не понял вас... Зачеркнуть цифру? (y/n) ')
         if answer == 'y':
@@ -98,16 +99,26 @@ class User(Computer):
 
 class Game:
     def __init__(self):
-        # self.players = []
-        self.user = User()
-        self.compic = Computer()
+        self.players = {}
         self.bag = Bag()
+        self.winners = []
+        self.losers = []
 
     # def new_player(self):
     #     self.players.append()
     #     pass
+    def generate_players(self, num_compics, num_users):
 
-    def run(self):
+        for i in range(num_compics):
+            pl_name = f'compic-{i+1}'
+            self.players[pl_name] = Computer(pl_name)
+
+        for i in range(num_users):
+            pl_name = f'user-{i+1}'
+            self.players[pl_name] = User(pl_name)
+
+    def run(self, num_compics, num_users):
+        self.generate_players(num_compics, num_users)
 
         self.cards_show()
 
@@ -118,13 +129,11 @@ class Game:
 
             self.step(num)
 
-            if self.user.is_looser:
-                print('\nСОЖАЛЕЮ, но ВЫ ПРОИГРАЛИ... Нужно быть внимательнее!')
-                break
+            # self.check_looser()
 
             self.cards_show()
-            self.user.stats()
-            self.compic.stats()
+            self.stats_show()
+
             self.bag.stats()
 
             # game.check_winner(players)
@@ -135,22 +144,48 @@ class Game:
                 print('Игра продолжается...\n')
 
     def step(self, num):
-        self.user.step(num)
-        self.compic.step(num)
+        for player in self.players.values():
+            player.step(num)
+            if isinstance(player, User):
+                if player.is_looser:
+                    print(f'\nСОЖАЛЕЮ, {player.name}, но ВЫ ПРОИГРАЛИ... Нужно быть внимательнее!')
+                    # заносим лузеров в список для удаления из словаря игроков
+                    self.losers.append(player)
+                    # break
+        # удаляем лузеров
+        for loser in self.losers:
+            self.players.pop(loser.name)
+        # даляем список лузеров, т.к. мы их только что удалили
+        self.losers = []
+
 
     def cards_show(self):
-        self.user.card.show()
-        self.compic.card.show()
+        for player in self.players.values():
+            player.card.show()
+
+    def stats_show(self):
+        for player in self.players.values():
+            player.stats()
+
+    # def check_looser(self):
+    #     for player in self.players:
+    #         if
+    #     if self.user.is_looser:
+    #         print('\nСОЖАЛЕЮ, но ВЫ ПРОИГРАЛИ... Нужно быть внимательнее!')
+    #         break
 
     def check_winner(self):
-        if self.user.is_winner and self.compic.is_winner:
-            print('\nНИЧЬЯ!!!')
+
+        # Сосавляем список победителей, если они есть
+        for player in self.players.values():
+            if player.is_winner:
+                self.winners.append(player)
+
+        if len(self.winners) > 1:
+            print(f'\nНИЧЬЯ!!! Победили {[winner.name for winner in self.winners]}!')
             return True
-        elif self.user.is_winner:
-            print('\nВЫ ПОБЕДИТЕЛЬ!')
-            return True
-        elif self.compic.is_winner:
-            print('\nКОМПИК ПОБЕДИТЕЛЬ!')
+        elif self.winners:
+            print(f'ПОБЕДИЛ {self.winners[0].name}!')
             return True
 
         return False
