@@ -99,6 +99,8 @@ class User(Computer):
 
 class Game:
     def __init__(self):
+        self.num_users = 0
+        self.num_compics = 0
         self.players = {}
         self.bag = Bag()
         self.winners = []
@@ -118,8 +120,10 @@ class Game:
             self.players[pl_name] = User(pl_name)
 
     def run(self, num_compics, num_users):
-        self.generate_players(num_compics, num_users)
+        self.num_compics = num_compics
+        self.num_users = num_users
 
+        self.generate_players(num_compics, num_users)
         self.cards_show()
 
         while True:
@@ -128,6 +132,10 @@ class Game:
             print(f'Из мешка вынут боченок номер {num}!')
 
             self.step(num)
+
+            if self.num_users == 0 and self.num_compics == 0:
+                print('\nTHE GAME IS OVER == FINITA LA COMEDIA')
+                break
 
             # self.check_looser()
 
@@ -149,6 +157,7 @@ class Game:
             if isinstance(player, User):
                 if player.is_looser:
                     print(f'\nСОЖАЛЕЮ, {player.name}, но ВЫ ПРОИГРАЛИ... Нужно быть внимательнее!')
+                    self.num_users -= 1
                     # заносим лузеров в список для удаления из словаря игроков
                     self.losers.append(player)
                     # break
@@ -157,6 +166,7 @@ class Game:
             self.players.pop(loser.name)
         # даляем список лузеров, т.к. мы их только что удалили
         self.losers = []
+
 
 
     def cards_show(self):
