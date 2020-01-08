@@ -50,9 +50,6 @@ class Card:
             print() if i + 1 in (9, 18, 27) else print(' ', end='')
         print('-' * 26, end='\n')
 
-# Родительский класс - воможно потом
-# class Player:
-
 
 class Computer:
 
@@ -106,9 +103,6 @@ class Game:
         self.winners = []
         self.losers = []
 
-    # def new_player(self):
-    #     self.players.append()
-    #     pass
     def generate_players(self, num_compics, num_users):
 
         for i in range(num_compics):
@@ -137,14 +131,10 @@ class Game:
                 print('\nTHE GAME IS OVER == FINITA LA COMEDIA')
                 break
 
-            # self.check_looser()
-
             self.cards_show()
             self.stats_show()
 
             self.bag.stats()
-
-            # game.check_winner(players)
 
             if self.check_winner():
                 break
@@ -167,8 +157,6 @@ class Game:
         # даляем список лузеров, т.к. мы их только что удалили
         self.losers = []
 
-
-
     def cards_show(self):
         for player in self.players.values():
             player.card.show()
@@ -177,16 +165,9 @@ class Game:
         for player in self.players.values():
             player.stats()
 
-    # def check_looser(self):
-    #     for player in self.players:
-    #         if
-    #     if self.user.is_looser:
-    #         print('\nСОЖАЛЕЮ, но ВЫ ПРОИГРАЛИ... Нужно быть внимательнее!')
-    #         break
-
     def check_winner(self):
 
-        # Сосавляем список победителей, если они есть
+        # Составляем список победителей, если они есть
         for player in self.players.values():
             if player.is_winner:
                 self.winners.append(player)
@@ -199,15 +180,6 @@ class Game:
             return True
 
         return False
-
-        # for player in players:
-        #     if player.is_winner():
-        #         return True
-        # pass
-        # Если оба - ничья
-        # Если никто - "игра продожается"
-        # Если кто-то - объявляем победителя и игра завершается
-        # Если кто пользователь проиграл, то сообщение и игра завершается
 
 
 if __name__ == '__main__':
