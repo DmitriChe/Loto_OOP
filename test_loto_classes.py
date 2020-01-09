@@ -15,6 +15,37 @@ class TestBag:
         bag = Bag()
         assert bag.nums[-1] == bag.next()
 
+    def test_bag_str(self):
+        bag = Bag()
+        assert str(bag) != ''
+        assert str(bag) == 'Всего 90 бочонков №№: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,' \
+                           ' 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,' \
+                           ' 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,' \
+                           ' 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,' \
+                           ' 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, '
+
+    def test_bag_eq(self):
+        bag_one = Bag()
+        bag_two = Bag()
+        bag_three = Bag()
+        bag_three.nums[0] = 100
+        assert bag_one == bag_two
+        assert bag_one != bag_three
+
+    def test_bag_item(self):
+        bag = Bag()
+        bag.nums = sorted(bag.nums)
+        assert bag.nums[0] == 1
+        assert bag.nums[89] == 90
+        assert bag.nums[44] == bag.nums[89] // 2
+        assert bag.nums[0] != 0
+        assert bag.nums[89] != 89
+
+    def test_bag_len(self):
+        bag = Bag()
+        assert len(bag) == 90
+        assert len(bag) == len(bag.nums)
+
 
 class TestCard:
 
